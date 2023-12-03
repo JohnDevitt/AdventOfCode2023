@@ -1,49 +1,62 @@
-import { Gt, Eq, Add } from 'ts-arithmetic'
+import { Gt, Eq, Add } from "ts-arithmetic";
 
-type ComputeRound<GameString extends string> = GameString extends `${infer GameNumber}: ${infer GameData}` ?
-    GameNumber extends `Game ${infer GameIndex extends number}` ?
-    GetRoundData<GameData, GameIndex>
-    : never : never;
+type ComputeRound<GameString extends string> =
+  GameString extends `${infer GameNumber}: ${infer GameData}`
+    ? GameNumber extends `Game ${infer GameIndex extends number}`
+      ? GetRoundData<GameData, GameIndex>
+      : never
+    : never;
 
-type GetRoundData<GameDataString extends string, RoundIndex extends number,  Accumulator extends string[] = []> = GameDataString extends `${infer GameRound}; ${infer Rest}` ?
-    Eq<GetRoundItem<GameRound, RoundIndex>, RoundIndex> extends 1 ?
-        GetRoundData<Rest, RoundIndex, Accumulator>
-    : 0 
-    : Eq<GetRoundItem<GameDataString, RoundIndex>, 0> extends 1 ?
-        0 : RoundIndex;
+type GetRoundData<
+  GameDataString extends string,
+  RoundIndex extends number,
+  Accumulator extends string[] = []
+> = GameDataString extends `${infer GameRound}; ${infer Rest}`
+  ? Eq<GetRoundItem<GameRound, RoundIndex>, RoundIndex> extends 1
+    ? GetRoundData<Rest, RoundIndex, Accumulator>
+    : 0
+  : Eq<GetRoundItem<GameDataString, RoundIndex>, 0> extends 1
+  ? 0
+  : RoundIndex;
 
-type GetRoundItem<RoundString extends string, RoundIndex extends number, Accumulator extends number = 0> = RoundString extends `${infer RoundValue}, ${infer Rest}` ?
-    Eq<GetSingleItem<RoundValue, RoundIndex>, RoundIndex> extends 1 ?
-        GetRoundItem<Rest, RoundIndex, Accumulator>
-    : 0 
-    : Eq<GetSingleItem<RoundString, RoundIndex>, 0> extends 1 ?
-        0 : RoundIndex;
+type GetRoundItem<
+  RoundString extends string,
+  RoundIndex extends number,
+  Accumulator extends number = 0
+> = RoundString extends `${infer RoundValue}, ${infer Rest}`
+  ? Eq<GetSingleItem<RoundValue>, 1> extends 1
+    ? 0
+    : GetRoundItem<Rest, RoundIndex, Accumulator>
+  : Eq<GetSingleItem<RoundString>, 0> extends 1
+  ? RoundIndex
+  : 0;
 
-type GetSingleItem<Item extends string, RoundCount extends number> = Item extends `${infer Score extends number} ${infer Color}` ?
-    Color extends 'blue' ?
-        Gt<Score, 14> extends 1 ?
-            0 :
-            RoundCount :
-    Color extends 'red' ?
-        Gt<Score, 12> extends 1 ?
-            0 :
-            RoundCount :
-    Color extends 'green' ?
-        Gt<Score, 13> extends 1 ?
-            0 :
-            RoundCount :
-        never : 
-    never;
+type GetSingleItem<Item extends string> =
+  Item extends `${infer Score extends number} ${infer Color}`
+    ? Color extends "blue"
+      ? Gt<Score, 14>
+      : Color extends "red"
+      ? Gt<Score, 12>
+      : Color extends "green"
+      ? Gt<Score, 13>
+      : never
+    : never;
 
-type SplitByLine<T extends string, Acc extends number = 0> = T extends `${infer Line1}\n${infer Rest}`
-        ? SplitByLine<Rest, Add<ComputeRound<Line1>, Acc>>
-        : Acc;
+type SplitByLine<
+  T extends string,
+  Acc extends number = 0
+> = T extends `${infer Line1}\n${infer Rest}`
+  ? SplitByLine<Rest, Add<ComputeRound<Line1>, Acc>>
+  : Acc;
 
-type LastLine<T extends string> = T extends `${infer _}\n${infer Rest}` ? LastLine<Rest> : T;
-    
-type Result = Add<SplitByLine<Input>, ComputeRound<LastLine<Input>>>
+type LastLine<T extends string> = T extends `${infer _}\n${infer Rest}`
+  ? LastLine<Rest>
+  : T;
 
-type Input = `Game 1: 2 blue, 4 green; 7 blue, 1 red, 14 green; 5 blue, 13 green, 1 red; 1 red, 7 blue, 11 green
+type Result = Add<SplitByLine<Input>, ComputeRound<LastLine<Input>>>;
+
+type Input =
+  `Game 1: 2 blue, 4 green; 7 blue, 1 red, 14 green; 5 blue, 13 green, 1 red; 1 red, 7 blue, 11 green
 Game 2: 6 blue, 3 green; 4 red, 1 green, 7 blue; 2 green
 Game 3: 4 blue, 3 red; 2 blue, 4 red, 7 green; 1 blue, 6 red, 7 green; 5 green, 10 blue; 9 green, 1 blue, 6 red; 8 blue, 1 red, 12 green
 Game 4: 15 blue, 4 green, 5 red; 2 red, 2 green, 5 blue; 3 green, 13 blue; 17 blue, 1 green, 5 red
@@ -142,4 +155,4 @@ Game 96: 16 blue, 7 green, 5 red; 5 green, 5 blue, 6 red; 3 green, 17 blue, 10 r
 Game 97: 12 red; 1 blue, 6 red, 1 green; 9 red, 2 blue, 1 green; 1 green, 2 blue, 1 red; 15 red, 1 blue; 1 blue
 Game 98: 11 red, 6 blue, 13 green; 4 blue, 2 red, 12 green; 2 blue, 8 green, 10 red
 Game 99: 2 red, 1 blue; 4 green; 7 green, 1 blue, 1 red; 5 green, 2 red; 1 blue, 2 red, 9 green; 2 green, 3 red
-Game 100: 7 red, 11 blue; 10 red, 5 blue, 1 green; 7 red, 1 green, 13 blue; 9 red; 9 red, 19 blue; 9 red, 9 blue`
+Game 100: 7 red, 11 blue; 10 red, 5 blue, 1 green; 7 red, 1 green, 13 blue; 9 red; 9 red, 19 blue; 9 red, 9 blue`;
