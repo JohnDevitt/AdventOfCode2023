@@ -1,150 +1,244 @@
-import { Add, Multiply } from 'ts-arithmetic'
-
+import { Add, Multiply } from "ts-arithmetic";
 
 type SplitStringNext<T extends string> = T extends `${infer _}${infer Rest}`
-    ? SplitStringOne<Rest>
-        : 0;
+  ? SplitStringOne<Rest>
+  : 0;
 
-type SplitStringOne<T extends string> = T extends `${'one' | '1'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 1>
-        : SplitStringTwo<T>;
+type SplitStringOne<T extends string> = T extends `${"one" | "1"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 1>
+  : SplitStringTwo<T>;
 
-type SplitStringTwo<T extends string> = T extends `${'two' | '2'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 2>
-        : SplitStringThee<T>;
+type SplitStringTwo<T extends string> = T extends `${"two" | "2"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 2>
+  : SplitStringThee<T>;
 
-type SplitStringThee<T extends string> = T extends `${'three' | '3'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 3>
-        : SplitStringFour<T>;
-    
-type SplitStringFour<T extends string> = T extends `${'four' | '4'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 4>
-        : SplitStringFive<T>;
+type SplitStringThee<T extends string> = T extends `${
+  | "three"
+  | "3"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 3>
+  : SplitStringFour<T>;
 
-type SplitStringFive<T extends string> = T extends `${'five' | '5'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 5>
-        : SplitStringSix<T>;
+type SplitStringFour<T extends string> = T extends `${
+  | "four"
+  | "4"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 4>
+  : SplitStringFive<T>;
 
-type SplitStringSix<T extends string> = T extends `${'six' | '6'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 6>
-        : SplitStringSeven<T>;
+type SplitStringFive<T extends string> = T extends `${
+  | "five"
+  | "5"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 5>
+  : SplitStringSix<T>;
 
-type SplitStringSeven<T extends string> = T extends `${'seven' | '7'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 7>
-        : SplitStringEight<T>;
+type SplitStringSix<T extends string> = T extends `${"six" | "6"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 6>
+  : SplitStringSeven<T>;
 
-type SplitStringEight<T extends string> = T extends `${'eight' | '8'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 8>
-        : SplitStringNine<T>;
-        
-type SplitStringNine<T extends string> = T extends `${'nine' | '9'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 9>
-        : SplitStringZero<T>;
-    
-type SplitStringZero<T extends string> = T extends `${'zero' | '0'}${infer Rest}`
-    ? SplitStringNextWithFirstVal<T, 0>
-        : SplitStringNext<T>;
+type SplitStringSeven<T extends string> = T extends `${
+  | "seven"
+  | "7"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 7>
+  : SplitStringEight<T>;
+
+type SplitStringEight<T extends string> = T extends `${
+  | "eight"
+  | "8"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 8>
+  : SplitStringNine<T>;
+
+type SplitStringNine<T extends string> = T extends `${
+  | "nine"
+  | "9"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 9>
+  : SplitStringZero<T>;
+
+type SplitStringZero<T extends string> = T extends `${
+  | "zero"
+  | "0"}${infer Rest}`
+  ? SplitStringNextWithFirstVal<T, 0>
+  : SplitStringNext<T>;
 
 // FIRST VAL
 
-type SplitStringNextWithFirstVal<T extends string, V extends number> = T extends `${infer _}${infer Rest}`
-    ? SplitStringOneWithFirstVal<Rest, V>
-        : Multiply<V, 11>;
+type SplitStringNextWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${infer _}${infer Rest}`
+  ? SplitStringOneWithFirstVal<Rest, V>
+  : Multiply<V, 11>;
 
-type SplitStringOneWithFirstVal<T extends string, V extends number> = T extends `${'one' | '1'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 1>
-        : SplitStringTwoWithFirstVal<T, V>;
+type SplitStringOneWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"one" | "1"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 1>
+  : SplitStringTwoWithFirstVal<T, V>;
 
-type SplitStringTwoWithFirstVal<T extends string, V extends number> = T extends `${'two' | '2'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 2>
-        : SplitStringTheeWithFirstVal<T, V>;
+type SplitStringTwoWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"two" | "2"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 2>
+  : SplitStringTheeWithFirstVal<T, V>;
 
-type SplitStringTheeWithFirstVal<T extends string, V extends number> = T extends `${'three' | '3'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 3>
-        : SplitStringFourWithFirstVal<T, V>;
-    
-type SplitStringFourWithFirstVal<T extends string, V extends number> = T extends `${'four' | '4'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 4>
-        : SplitStringFiveWithFirstVal<T, V>;
+type SplitStringTheeWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"three" | "3"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 3>
+  : SplitStringFourWithFirstVal<T, V>;
 
-type SplitStringFiveWithFirstVal<T extends string, V extends number> = T extends `${'five' | '5'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 5>
-        : SplitStringSixWithFirstVal<T, V>;
+type SplitStringFourWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"four" | "4"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 4>
+  : SplitStringFiveWithFirstVal<T, V>;
 
-type SplitStringSixWithFirstVal<T extends string, V extends number> = T extends `${'six' | '6'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 6>
-        : SplitStringSevenWithFirstVal<T, V>;
+type SplitStringFiveWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"five" | "5"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 5>
+  : SplitStringSixWithFirstVal<T, V>;
 
-type SplitStringSevenWithFirstVal<T extends string, V extends number> = T extends `${'seven' | '7'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 7>
-        : SplitStringEightWithFirstVal<T, V>;
+type SplitStringSixWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"six" | "6"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 6>
+  : SplitStringSevenWithFirstVal<T, V>;
 
-type SplitStringEightWithFirstVal<T extends string, V extends number> = T extends `${'eight' | '8'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 8>
-        : SplitStringNineWithFirstVal<T, V>;
-        
-type SplitStringNineWithFirstVal<T extends string, V extends number> = T extends `${'nine' | '9'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 9>
-        : SplitStringZeroWithFirstVal<T, V>;
-    
-type SplitStringZeroWithFirstVal<T extends string, V extends number> = T extends `${'zero' | '0'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<Rest, V, 0>
-        : SplitStringNextWithFirstVal<T, V>;
+type SplitStringSevenWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"seven" | "7"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 7>
+  : SplitStringEightWithFirstVal<T, V>;
+
+type SplitStringEightWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"eight" | "8"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 8>
+  : SplitStringNineWithFirstVal<T, V>;
+
+type SplitStringNineWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"nine" | "9"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 9>
+  : SplitStringZeroWithFirstVal<T, V>;
+
+type SplitStringZeroWithFirstVal<
+  T extends string,
+  V extends number,
+> = T extends `${"zero" | "0"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<Rest, V, 0>
+  : SplitStringNextWithFirstVal<T, V>;
 
 // SECOND VAL
 
-type SplitStringNextWithSecondVal<T extends string, V extends number, W extends number> = T extends `${infer _}${infer Rest}`
-    ? SplitStringOneWithSecondVal<Rest, V, W>
-        : Add<Multiply<V, 10>, W>;
+type SplitStringNextWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${infer _}${infer Rest}`
+  ? SplitStringOneWithSecondVal<Rest, V, W>
+  : Add<Multiply<V, 10>, W>;
 
-type SplitStringOneWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'one' | '1'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 1>
-        : SplitStringTwoWithSecondVal<T, V, W>;
+type SplitStringOneWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"one" | "1"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 1>
+  : SplitStringTwoWithSecondVal<T, V, W>;
 
-type SplitStringTwoWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'two' | 2}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 2>
-        : SplitStringTheeWithSecondVal<T, V, W>;
+type SplitStringTwoWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"two" | 2}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 2>
+  : SplitStringTheeWithSecondVal<T, V, W>;
 
-type SplitStringTheeWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'three' | '3'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 3>
-        : SplitStringFourWithSecondVal<T, V, W>;
-    
-type SplitStringFourWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'four' | '4'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 4>
-        : SplitStringFiveWithSecondVal<T, V, W>;
+type SplitStringTheeWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"three" | "3"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 3>
+  : SplitStringFourWithSecondVal<T, V, W>;
 
-type SplitStringFiveWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'five' | '5'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 5>
-        : SplitStringSixWithSecondVal<T, V, W>;
+type SplitStringFourWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"four" | "4"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 4>
+  : SplitStringFiveWithSecondVal<T, V, W>;
 
-type SplitStringSixWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'six' | '6'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 6>
-        : SplitStringSevenWithSecondVal<T, V, W>;
+type SplitStringFiveWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"five" | "5"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 5>
+  : SplitStringSixWithSecondVal<T, V, W>;
 
-type SplitStringSevenWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'seven' | '7'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 7>
-        : SplitStringEightWithSecondVal<T, V, W>;
+type SplitStringSixWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"six" | "6"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 6>
+  : SplitStringSevenWithSecondVal<T, V, W>;
 
-type SplitStringEightWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'eight' | '8'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 8>
-        : SplitStringNineWithSecondVal<T, V, W>;
-        
-type SplitStringNineWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'nine' | '9'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 9>
-        : SplitStringZeroWithSecondVal<T, V, W>;
-    
-type SplitStringZeroWithSecondVal<T extends string, V extends number, W extends number> = T extends `${'zero' | '0'}${infer Rest}`
-    ? SplitStringNextWithSecondVal<T, V, 0>
-        : SplitStringNextWithSecondVal<T, V, W>;
+type SplitStringSevenWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"seven" | "7"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 7>
+  : SplitStringEightWithSecondVal<T, V, W>;
 
+type SplitStringEightWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"eight" | "8"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 8>
+  : SplitStringNineWithSecondVal<T, V, W>;
 
-type SplitByLine<T extends string, Acc extends number = 0> = T extends `${infer Line1}\n${infer Rest}`
-    ? SplitByLine<Rest, Add<SplitStringOne<Line1>, Acc>>
-    : Acc
+type SplitStringNineWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"nine" | "9"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 9>
+  : SplitStringZeroWithSecondVal<T, V, W>;
 
-type LastLine<T extends string> = T extends `${infer _}\n${infer Rest}` ? LastLine<Rest> : T;
+type SplitStringZeroWithSecondVal<
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${"zero" | "0"}${infer Rest}`
+  ? SplitStringNextWithSecondVal<T, V, 0>
+  : SplitStringNextWithSecondVal<T, V, W>;
 
-type Result = Add<SplitByLine<Input>, SplitStringOne<LastLine<Input>>>
+type SplitByLine<
+  T extends string,
+  Acc extends number = 0,
+> = T extends `${infer Line1}\n${infer Rest}`
+  ? SplitByLine<Rest, Add<SplitStringOne<Line1>, Acc>>
+  : Acc;
+
+type LastLine<T extends string> = T extends `${infer _}\n${infer Rest}`
+  ? LastLine<Rest>
+  : T;
+
+type Result = Add<SplitByLine<Input>, SplitStringOne<LastLine<Input>>>;
 
 type Input = `sixsrvldfour4seven
 53hvhgchljnlxqjsgrhxgf1zfoureightmlhvvv
@@ -1145,4 +1239,4 @@ eight78
 xnhhlgfrqbgfhhnvllhptfh3
 ljjllzbbffpxcjrztzthreermg6fzqqpd
 72mmjrfjvlzone3threethreesix
-fiveonecfsfsix74twocllbfnptkgttf`
+fiveonecfsfsix74twocllbfnptkgttf`;

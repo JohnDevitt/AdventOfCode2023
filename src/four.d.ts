@@ -1,54 +1,75 @@
 import { Gt, Multiply, Add } from "ts-arithmetic";
 
 type BaseScores = {
-    'red': 0,
-    'green': 0,
-    'blue': 0
-}
+  red: 0;
+  green: 0;
+  blue: 0;
+};
 
 type ComputeSingleColor<
-    ColorScorePair extends string,
-    ColorScores extends {'red': number, 'green': number, 'blue': number}
-> =
-    ColorScorePair extends `${infer Score extends number} ${infer Color extends string}`
-        ? Color extends "blue"
-        ? Gt<Score, ColorScores['blue']> extends 1 ? {'red': ColorScores['red'], 'green': ColorScores['green'], 'blue':  Score} : ColorScores
-        : Color extends "red"
-        ? Gt<Score, ColorScores['red']> extends 1 ? {'red': Score, 'green': ColorScores['green'], 'blue': ColorScores['blue']} : ColorScores
-        : Color extends "green"
-        ? Gt<Score, ColorScores['green']> extends 1 ? {'red': ColorScores['red'], 'green': Score, 'blue': ColorScores['blue']} : ColorScores
+  ColorScorePair extends string,
+  ColorScores extends { red: number; green: number; blue: number },
+> = ColorScorePair extends `${infer Score extends number} ${infer Color extends
+  string}`
+  ? Color extends "blue"
+    ? Gt<Score, ColorScores["blue"]> extends 1
+      ? { red: ColorScores["red"]; green: ColorScores["green"]; blue: Score }
+      : ColorScores
+    : Color extends "red"
+      ? Gt<Score, ColorScores["red"]> extends 1
+        ? { red: Score; green: ColorScores["green"]; blue: ColorScores["blue"] }
+        : ColorScores
+      : Color extends "green"
+        ? Gt<Score, ColorScores["green"]> extends 1
+          ? { red: ColorScores["red"]; green: Score; blue: ColorScores["blue"] }
+          : ColorScores
         : never
-    : never;
+  : never;
 
 type ComputeSingleRound<
-    RoundString extends string,
-    ColorScores extends {'red': number, 'green': number, 'blue': number}
-> =
-    RoundString extends `${infer ColorScorePair extends string}, ${infer Rest extends string}`
-        ? ComputeSingleRound<Rest, ComputeSingleColor<ColorScorePair, ColorScores>>
-        : ComputeSingleColor<RoundString, ColorScores>;
+  RoundString extends string,
+  ColorScores extends { red: number; green: number; blue: number },
+> = RoundString extends `${infer ColorScorePair extends
+  string}, ${infer Rest extends string}`
+  ? ComputeSingleRound<Rest, ComputeSingleColor<ColorScorePair, ColorScores>>
+  : ComputeSingleColor<RoundString, ColorScores>;
 
 type ComputeSingleGame<
-    GameString extends string,
-    ColorScores extends {'red': number, 'green': number, 'blue': number}
-> =
-    GameString extends `${infer RoundString extends string}; ${infer Rest extends string}`
-        ? ComputeSingleGame<Rest, ComputeSingleRound<RoundString, ColorScores>>
-        : ComputeSingleRound<GameString, ColorScores>;
+  GameString extends string,
+  ColorScores extends { red: number; green: number; blue: number },
+> = GameString extends `${infer RoundString extends
+  string}; ${infer Rest extends string}`
+  ? ComputeSingleGame<Rest, ComputeSingleRound<RoundString, ColorScores>>
+  : ComputeSingleRound<GameString, ColorScores>;
 
-type ComputeRound<GameString extends string> = GameString extends `${infer _}: ${infer GameData}`
+type ComputeRound<GameString extends string> =
+  GameString extends `${infer _}: ${infer GameData}`
     ? ComputeSingleGame<GameData, BaseScores>
     : never;
 
 type SplitByLine<
   T extends string,
-  Acc extends number = 0
+  Acc extends number = 0,
 > = T extends `${infer Line1}\n${infer Rest}`
-  ? SplitByLine<Rest, Add<Multiply<Multiply<ComputeRound<Line1>['green'], ComputeRound<Line1>['red']>, ComputeRound<Line1>['blue']>, Acc>>
-  : Add<Multiply<Multiply<ComputeRound<T>['green'], ComputeRound<T>['red']>, ComputeRound<T>['blue']>, Acc>;
+  ? SplitByLine<
+      Rest,
+      Add<
+        Multiply<
+          Multiply<ComputeRound<Line1>["green"], ComputeRound<Line1>["red"]>,
+          ComputeRound<Line1>["blue"]
+        >,
+        Acc
+      >
+    >
+  : Add<
+      Multiply<
+        Multiply<ComputeRound<T>["green"], ComputeRound<T>["red"]>,
+        ComputeRound<T>["blue"]
+      >,
+      Acc
+    >;
 
-
-type Result = SplitByLine<Input>
+type Result = SplitByLine<Input>;
 
 type Input =
   `Game 1: 2 blue, 4 green; 7 blue, 1 red, 14 green; 5 blue, 13 green, 1 red; 1 red, 7 blue, 11 green

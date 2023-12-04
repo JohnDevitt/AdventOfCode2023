@@ -1,66 +1,81 @@
 import { Eq, Add, Pow, Multiply, Subtract } from "ts-arithmetic";
 
-
-type GetRoundNumber<
-    T extends string
->= 
-    T extends `Card ${infer _ extends number}:  ${infer LuckyNumbers extends string} |  ${infer MyNumbers extends string}` ?
-    CompareNumberLists<GetNumberList<LuckyNumbers>, GetNumberList<MyNumbers>> :
-    T extends `Card ${infer _ extends number}:  ${infer LuckyNumbers extends string} | ${infer MyNumbers extends string}` ?
-    CompareNumberLists<GetNumberList<LuckyNumbers>, GetNumberList<MyNumbers>> : 
-    T extends `Card ${infer _ extends number}: ${infer LuckyNumbers extends string} |  ${infer MyNumbers extends string}` ?
-    CompareNumberLists<GetNumberList<LuckyNumbers>, GetNumberList<MyNumbers>> :
-    T extends `Card ${infer _ extends number}: ${infer LuckyNumbers extends string} | ${infer MyNumbers extends string}` ?
-    CompareNumberLists<GetNumberList<LuckyNumbers>, GetNumberList<MyNumbers>> : 
-    never;
-
-
+type GetRoundNumber<T extends string> = T extends `Card ${infer _ extends
+  number}:  ${infer LuckyNumbers extends string} |  ${infer MyNumbers extends
+  string}`
+  ? CompareNumberLists<GetNumberList<LuckyNumbers>, GetNumberList<MyNumbers>>
+  : T extends `Card ${infer _ extends number}:  ${infer LuckyNumbers extends
+        string} | ${infer MyNumbers extends string}`
+    ? CompareNumberLists<GetNumberList<LuckyNumbers>, GetNumberList<MyNumbers>>
+    : T extends `Card ${infer _ extends number}: ${infer LuckyNumbers extends
+          string} |  ${infer MyNumbers extends string}`
+      ? CompareNumberLists<
+          GetNumberList<LuckyNumbers>,
+          GetNumberList<MyNumbers>
+        >
+      : T extends `Card ${infer _ extends number}: ${infer LuckyNumbers extends
+            string} | ${infer MyNumbers extends string}`
+        ? CompareNumberLists<
+            GetNumberList<LuckyNumbers>,
+            GetNumberList<MyNumbers>
+          >
+        : never;
 
 type GetNumberList<
-    NumberListString extends string,
-    NumberList extends number[] = []
->= NumberListString extends `${infer MyNumber extends number}  ${infer Rest extends string}` ?
-   GetNumberList<Rest, [...NumberList, MyNumber]>:
-   NumberListString extends `${infer MyNumber extends number} ${infer Rest extends string}` ?
-   GetNumberList<Rest, [...NumberList, MyNumber]>:
-   NumberListString extends `${infer MyNumber extends number}`?
-   [...NumberList, MyNumber]: 
-   NumberListString extends ` ${infer MyNumber extends number}`?
-   [...NumberList, MyNumber]: 
-   never;
+  NumberListString extends string,
+  NumberList extends number[] = [],
+> = NumberListString extends `${infer MyNumber extends
+  number}  ${infer Rest extends string}`
+  ? GetNumberList<Rest, [...NumberList, MyNumber]>
+  : NumberListString extends `${infer MyNumber extends
+        number} ${infer Rest extends string}`
+    ? GetNumberList<Rest, [...NumberList, MyNumber]>
+    : NumberListString extends `${infer MyNumber extends number}`
+      ? [...NumberList, MyNumber]
+      : NumberListString extends ` ${infer MyNumber extends number}`
+        ? [...NumberList, MyNumber]
+        : never;
 
 type Find<
-    NumberList extends number[],
-    TargetNumber extends number
->= NumberList extends [infer FirstLuckyNumber extends number, ...infer Rest extends number[]] ?
-    Eq<FirstLuckyNumber, TargetNumber> extends 1 ?
-        true :
-        Find<Rest, TargetNumber> : false;
+  NumberList extends number[],
+  TargetNumber extends number,
+> = NumberList extends [
+  infer FirstLuckyNumber extends number,
+  ...infer Rest extends number[],
+]
+  ? Eq<FirstLuckyNumber, TargetNumber> extends 1
+    ? true
+    : Find<Rest, TargetNumber>
+  : false;
 
 type CompareNumberLists<
-    MyNumbers extends number[],
-    LuckyNumbers extends number[],
-    Count extends number = 0
->= LuckyNumbers extends [infer FirstLuckyNumber extends number, ...infer Rest extends number[]] ?
-    Find<MyNumbers, FirstLuckyNumber> extends true ? 
-    CompareNumberLists<Rest, MyNumbers, Add<Count, 1>> :  CompareNumberLists<Rest, MyNumbers, Count> : RunLineCalculations<Count>;
-
+  MyNumbers extends number[],
+  LuckyNumbers extends number[],
+  Count extends number = 0,
+> = LuckyNumbers extends [
+  infer FirstLuckyNumber extends number,
+  ...infer Rest extends number[],
+]
+  ? Find<MyNumbers, FirstLuckyNumber> extends true
+    ? CompareNumberLists<Rest, MyNumbers, Add<Count, 1>>
+    : CompareNumberLists<Rest, MyNumbers, Count>
+  : RunLineCalculations<Count>;
 
 type SplitByLine<
-    T extends string,
-    Acc extends number = 0
-  > = T extends `${infer Line1}\n${infer Rest}`
-    ? SplitByLine<Rest, Add<GetRoundNumber<Line1>, Acc>>
-    : Add<GetRoundNumber<T>, Acc>;
+  T extends string,
+  Acc extends number = 0,
+> = T extends `${infer Line1}\n${infer Rest}`
+  ? SplitByLine<Rest, Add<GetRoundNumber<Line1>, Acc>>
+  : Add<GetRoundNumber<T>, Acc>;
 
-type RunLineCalculations<
-    MyNumber extends number
-> = 
-    Eq<MyNumber, 0> extends 1 ? 0 : Pow<2, Subtract<MyNumber, 1>>
+type RunLineCalculations<MyNumber extends number> = Eq<MyNumber, 0> extends 1
+  ? 0
+  : Pow<2, Subtract<MyNumber, 1>>;
 
-type Result = SplitByLine<Input>
+type Result = SplitByLine<Input>;
 
-type Input = `Card   1: 81  1 43 40 49 51 38 65 36  4 | 21 15  1 43 60  9 83 81 35 49 40 38 82 65 20  4 58 94 16 89 84 10 77 48 76
+type Input =
+  `Card   1: 81  1 43 40 49 51 38 65 36  4 | 21 15  1 43 60  9 83 81 35 49 40 38 82 65 20  4 58 94 16 89 84 10 77 48 76
 Card   2: 15 89 71 17 91 78 35 55 68 49 | 80 31 89 91 23 55 36 68 22 61 66 24 42 49 33 21 19 73 29 60 15 34 71 10 87
 Card   3:  4 45 78 42 29 92 16 90 93 30 | 97 90 75 40 43 65 92 83 41  4 47 35 29 80 68 87 30 71 98 42 95  7 76 69 88
 Card   4: 81  2 80 85 14 28 88 84 74 78 | 54 38 30 40 85 93 71 10 67  2 81 57 74  9 14  5 97 28 79 95 84 65 69 23 21
@@ -257,4 +272,4 @@ Card 194: 38 41 42 54 96 91 98 72 35  2 | 56 17 99 24 90 72 55 77 35 92 97 62 12
 Card 195: 17 18 58 50 46 31 82 67 60 56 | 87  2 80 77 39 76 59 20 16 42 91 48 37 62 85 84 41 70 10 82 27 99 66 92 63
 Card 196: 44 24 77 69 32 10 30 57 36 12 | 34 88 12 23 71 74 52 79 85 78 70 69 97 60 50 92 37 49 15 35 28 91 18 39  8
 Card 197: 55 19 90  7 53  3 34 96  8 95 | 47 50 57 44 88 76 81 85 13 62 94 10 23 26 69 75 27 51 24 43 19 82  2  4 38
-Card 198: 69 30 47 82 65 23 79 32  3 80 |  5  1 55 62 86 75 36 14 31  7 38 18 66 64 53 59 10 22 96 27 13 85 37 91 51`
+Card 198: 69 30 47 82 65 23 79 32  3 80 |  5  1 55 62 86 75 36 14 31  7 38 18 66 64 53 59 10 22 96 27 13 85 37 91 51`;

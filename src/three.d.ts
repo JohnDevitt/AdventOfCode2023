@@ -10,41 +10,41 @@ type ComputeRound<GameString extends string> =
 type GetRoundData<
   GameDataString extends string,
   RoundIndex extends number,
-  Accumulator extends string[] = []
+  Accumulator extends string[] = [],
 > = GameDataString extends `${infer GameRound}; ${infer Rest}`
   ? Eq<GetRoundItem<GameRound, RoundIndex>, RoundIndex> extends 1
     ? GetRoundData<Rest, RoundIndex, Accumulator>
     : 0
   : Eq<GetRoundItem<GameDataString, RoundIndex>, 0> extends 1
-  ? 0
-  : RoundIndex;
+    ? 0
+    : RoundIndex;
 
 type GetRoundItem<
   RoundString extends string,
   RoundIndex extends number,
-  Accumulator extends number = 0
+  Accumulator extends number = 0,
 > = RoundString extends `${infer RoundValue}, ${infer Rest}`
   ? Eq<GetSingleItem<RoundValue>, 1> extends 1
     ? 0
     : GetRoundItem<Rest, RoundIndex, Accumulator>
   : Eq<GetSingleItem<RoundString>, 0> extends 1
-  ? RoundIndex
-  : 0;
+    ? RoundIndex
+    : 0;
 
-type GetSingleItem<Item extends string> =
-  Item extends `${infer Score extends number} ${infer Color}`
-    ? Color extends "blue"
-      ? Gt<Score, 14>
-      : Color extends "red"
+type GetSingleItem<Item extends string> = Item extends `${infer Score extends
+  number} ${infer Color}`
+  ? Color extends "blue"
+    ? Gt<Score, 14>
+    : Color extends "red"
       ? Gt<Score, 12>
       : Color extends "green"
-      ? Gt<Score, 13>
-      : never
-    : never;
+        ? Gt<Score, 13>
+        : never
+  : never;
 
 type SplitByLine<
   T extends string,
-  Acc extends number = 0
+  Acc extends number = 0,
 > = T extends `${infer Line1}\n${infer Rest}`
   ? SplitByLine<Rest, Add<ComputeRound<Line1>, Acc>>
   : Acc;

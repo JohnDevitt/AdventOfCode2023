@@ -1,60 +1,63 @@
-import { Add, Multiply } from 'ts-arithmetic'
+import { Add, Multiply } from "ts-arithmetic";
 
 type DigitMapping = {
-    '0': 0;
-    '1': 1;
-    '2': 2;
-    '3': 3;
-    '4': 4;
-    '5': 5;
-    '6': 6;
-    '7': 7;
-    '8': 8;
-    '9': 9;
+  "0": 0;
+  "1": 1;
+  "2": 2;
+  "3": 3;
+  "4": 4;
+  "5": 5;
+  "6": 6;
+  "7": 7;
+  "8": 8;
+  "9": 9;
 };
 
-type Digit = '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'
-
+type Digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 
 type SplitStringWithBothNumbers<
-    T extends string,
-    V extends number,
-    W extends number
->= T extends `${infer Char}${infer Rest}`
-    ? Char extends Digit ?
-        SplitStringWithBothNumbers<Rest, V, DigitMapping[Char]>
-        : SplitStringWithBothNumbers<Rest, V, W>
-    : T extends Digit ?
-        Add<Multiply<V, 10>, DigitMapping[T]>
-        : Add<Multiply<V, 10>, W>;
+  T extends string,
+  V extends number,
+  W extends number,
+> = T extends `${infer Char}${infer Rest}`
+  ? Char extends Digit
+    ? SplitStringWithBothNumbers<Rest, V, DigitMapping[Char]>
+    : SplitStringWithBothNumbers<Rest, V, W>
+  : T extends Digit
+    ? Add<Multiply<V, 10>, DigitMapping[T]>
+    : Add<Multiply<V, 10>, W>;
 
 type SplitStringWithFirstNumber<
-    T extends string,
-    V extends number,
->= T extends `${infer Char}${infer Rest}`
-    ? Char extends Digit ?
-        SplitStringWithBothNumbers<Rest, V, DigitMapping[Char]>
-        : SplitStringWithFirstNumber<Rest, V>
-    : T extends Digit ?
-        Add<Multiply<V, 10>, DigitMapping[T]>
-        : Add<Multiply<V, 10>, V>
-
+  T extends string,
+  V extends number,
+> = T extends `${infer Char}${infer Rest}`
+  ? Char extends Digit
+    ? SplitStringWithBothNumbers<Rest, V, DigitMapping[Char]>
+    : SplitStringWithFirstNumber<Rest, V>
+  : T extends Digit
+    ? Add<Multiply<V, 10>, DigitMapping[T]>
+    : Add<Multiply<V, 10>, V>;
 
 type SplitString<T extends string> = T extends `${infer Char}${infer Rest}`
-    ? Char extends Digit
-        ? SplitStringWithFirstNumber<Rest, DigitMapping[Char]>
-        : SplitString<Rest>
-    : T extends Digit ?
-        Add<Multiply<DigitMapping[T], 10>, DigitMapping[T]>
-        : 0
+  ? Char extends Digit
+    ? SplitStringWithFirstNumber<Rest, DigitMapping[Char]>
+    : SplitString<Rest>
+  : T extends Digit
+    ? Add<Multiply<DigitMapping[T], 10>, DigitMapping[T]>
+    : 0;
 
-type SplitByLine<T extends string, Acc extends number = 0> = T extends `${infer Line1}\n${infer Rest}`
-    ? SplitByLine<Rest, Add<SplitString<Line1>, Acc>>
-    : Acc
+type SplitByLine<
+  T extends string,
+  Acc extends number = 0,
+> = T extends `${infer Line1}\n${infer Rest}`
+  ? SplitByLine<Rest, Add<SplitString<Line1>, Acc>>
+  : Acc;
 
-type LastLine<T extends string> = T extends `${infer _}\n${infer Rest}` ? LastLine<Rest> : T;
+type LastLine<T extends string> = T extends `${infer _}\n${infer Rest}`
+  ? LastLine<Rest>
+  : T;
 
-type Result = Add<SplitByLine<Input>, SplitString<LastLine<Input>>>
+type Result = Add<SplitByLine<Input>, SplitString<LastLine<Input>>>;
 
 type Input = `sixsrvldfour4seven
 53hvhgchljnlxqjsgrhxgf1zfoureightmlhvvv
@@ -1055,4 +1058,4 @@ eight78
 xnhhlgfrqbgfhhnvllhptfh3
 ljjllzbbffpxcjrztzthreermg6fzqqpd
 72mmjrfjvlzone3threethreesix
-fiveonecfsfsix74twocllbfnptkgttf`
+fiveonecfsfsix74twocllbfnptkgttf`;
